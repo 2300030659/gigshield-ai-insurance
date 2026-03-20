@@ -1,70 +1,135 @@
-# Getting Started with Create React App
+# 🚀 GigShield - AI Insurance for Grocery Delivery Partners
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 Problem Statement
 
-## Available Scripts
+Grocery delivery partners (Zepto, Blinkit, Swiggy Instamart) rely on quick deliveries for income.  
+External disruptions like heavy rain, heatwaves, and pollution reduce their working hours, causing direct income loss.
 
-In the project directory, you can run:
+Currently, there is **no income protection system** for these workers.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 💡 Solution
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+GigShield is an **AI-powered parametric insurance platform** that:
 
-### `npm test`
+- Protects delivery partners from income loss
+- Automatically detects disruptions (simulated)
+- Triggers instant payouts
+- Uses a **weekly subscription model**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 👤 Persona
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Grocery Delivery Partner (Zepto / Blinkit)
+- Works daily on quick commerce deliveries
+- Income depends on active delivery hours
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🧠 AI Model (Rule-Based)
 
-### `npm run eject`
+We implemented a **rule-based AI model** to calculate risk and premium.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Inputs:
+- 📍 Location (city / industrial / rural)
+- 🌦 Weather risk (simulated)
+- ⏱ Working hours
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Risk Score Calculation:
+- Area risk → +1 to +3
+- Weather risk → +1 to +3
+- Working hours → +1 to +3
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Output:
+- Low Risk → ₹20/week
+- Medium Risk → ₹35/week
+- High Risk → ₹50/week
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## ⚙️ Features
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### ✅ 1. User Registration
+- Name
+- Location
+- Working hours
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+### ✅ 2. AI Risk & Premium Calculation
+- Dynamic weekly pricing
+- Based on multiple risk factors
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+### ✅ 3. Disruption Detection (Simulated)
+- 🌧 Rain
+- ☀️ Heatwave
+- 🌫 Pollution
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+### ✅ 4. Automatic Claims (Zero-Touch)
+- No manual claim process
+- Instant trigger on disruption
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+### ✅ 5. Instant Payout (Simulated)
+- Example:
+  - Rain → ₹200
+  - Heat → ₹150
+  - Pollution → ₹180
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+### ✅ 6. Fraud Detection
+- Maximum 3 claims allowed
+- Prevents abuse of system
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+### ✅ 7. Dashboard
+- Weekly premium
+- Risk level
+- Earnings protected
+- Claims history
+- AI insights
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+### ✅ 8. Analytics
+- Bar chart visualization of claims
+- Helps track payouts
+
+---
+
+## 🔄 Workflow
+
+1. User registers
+2. AI calculates risk score
+3. Weekly premium assigned
+4. Disruption occurs (simulated)
+5. Claim auto-triggered
+6. Instant payout credited
+7. Data shown in dashboard
+
+---
+
+## 🏗️ Tech Stack
+
+- Frontend: React.js
+- Styling: Inline CSS
+- Charts: Recharts
+- Icons: Lucide React
+- AI Model: Rule-based logic (frontend)
+
+---
+
+## ▶️ How to Run
+
+```bash
+npm install
+npm start
