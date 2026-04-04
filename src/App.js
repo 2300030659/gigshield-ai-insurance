@@ -1,126 +1,108 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CloudRain,
   ShieldCheck,
   IndianRupee,
   MapPin,
+  AlertTriangle,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    location: "",
-    hours: "",
-  });
+  const [form, setForm] = useState({ name: "", location: "", hours: "" });
+
   const [claims, setClaims] = useState([]);
   const [premium, setPremium] = useState(20);
   const [risk, setRisk] = useState("Low");
   const [earnings, setEarnings] = useState(0);
-  const [status, setStatus] = useState("No disruption");
+  const [status, setStatus] = useState("Monitoring...");
+  const [engineLog, setEngineLog] = useState([]);
 
-  // 🔥 AI RULE-BASED MODEL
+  // AI MODEL
   const aiModel = (location, hours) => {
     let score = 0;
-
-    // Area Risk
     if (location.includes("city")) score += 3;
-    if (location.includes("industrial")) score += 2;
-    if (location.includes("rural")) score += 1;
-
-    // Weather Risk (simulated deterministic)
-    const weatherType = ["low", "medium", "high"];
-    const weather = weatherType[location.length % 3]; // stable simulation
-
-    if (weather === "high") score += 3;
-    if (weather === "medium") score += 2;
-    if (weather === "low") score += 1;
-
-    // Working Hours Risk
+    else score += 1;
     if (hours > 10) score += 3;
     else if (hours > 7) score += 2;
     else score += 1;
-
     return score;
   };
 
+  const calculatePremium = (score) => {
+    if (score >= 6) return { price: 50, risk: "High" };
+    if (score >= 4) return { price: 35, risk: "Medium" };
+    return { price: 20, risk: "Low" };
+  };
+
   const register = () => {
-    if (!form.name || !form.location || !form.hours) {
-      alert("Enter all details");
-      return;
-    }
-
-    const loc = form.location.toLowerCase();
-    const hrs = parseInt(form.hours);
-
-    const score = aiModel(loc, hrs);
-
-    let premiumValue = 20;
-    let riskLevel = "Low";
-
-    // AI decision mapping
-    if (score >= 7) {
-      premiumValue = 50;
-      riskLevel = "High";
-    } else if (score >= 5) {
-      premiumValue = 35;
-      riskLevel = "Medium";
-    } else {
-      premiumValue = 20;
-      riskLevel = "Low";
-    }
-
-    setPremium(premiumValue);
-    setRisk(riskLevel);
+    const score = aiModel(
+      form.location.toLowerCase(),
+      parseInt(form.hours)
+    );
+    const result = calculatePremium(score);
+    setPremium(result.price);
+    setRisk(result.risk);
     setUser(form);
   };
 
-  // Claim Logic
-  const triggerClaim = (type) => {
-    if (claims.length >= 3) {
-      alert("⚠️ Fraud detected: Too many claims!");
-      return;
-    }
+  const simulateEnvironment = () => {
+    const rand = Math.random();
+    if (rand < 0.33) return "rain";
+    if (rand < 0.66) return "heat";
+    if (rand < 0.85) return "pollution";
+    return null;
+  };
 
-    let amount = 0;
+  const fraudCheck = () => claims.length < 3;
 
-    if (type === "rain") {
-      amount = 200;
-      setStatus("🌧 Heavy Rain Detected");
-    }
-    if (type === "heat") {
-      amount = 150;
-      setStatus("☀️ Heatwave Detected");
-    }
-    if (type === "pollution") {
-      amount = 180;
-      setStatus("🌫 High Pollution Detected");
-    }
-
+  const payout = (type) => {
+    const amounts = { rain: 200, heat: 150, pollution: 180 };
     const newClaim = {
       type,
-      amount,
+      amount: amounts[type],
       time: new Date().toLocaleTimeString(),
     };
-
     setClaims((prev) => [...prev, newClaim]);
-    setEarnings((prev) => prev + amount);
-
-    alert("💰 Payment Sent via UPI (Simulated)");
+    setEarnings((prev) => prev + newClaim.amount);
   };
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      const event = simulateEnvironment();
+      if (!event) return;
+
+      setEngineLog((prev) => [...prev, `Trigger: ${event}`]);
+
+      if (!fraudCheck()) {
+        setStatus("⚠️ Fraud blocked");
+        return;
+      }
+
+      setStatus(`🚨 ${event.toUpperCase()} detected`);
+      payout(event);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [user, claims]);
+
+  const totalClaims = claims.reduce((sum, c) => sum + c.amount, 0);
+  const lossRatio = premium ? (totalClaims / premium).toFixed(2) : 0;
 
   return (
     <div style={styles.app}>
-      <h1 style={styles.logo}>GigShield - Grocery Protection</h1>
+      <h1 style={styles.logo}>🚀 GigShield</h1>
 
       {!user ? (
         <div style={styles.card}>
-          <h2>AI Insurance for Grocery Delivery Partners</h2>
+          <h2>Activate Protection</h2>
 
           <input
             style={styles.input}
-            placeholder="Your Name"
+            placeholder="Name"
             onChange={(e) =>
               setForm({ ...form, name: e.target.value })
             }
@@ -128,7 +110,7 @@ function App() {
 
           <input
             style={styles.input}
-            placeholder="City / Area"
+            placeholder="Location (city/rural)"
             onChange={(e) =>
               setForm({ ...form, location: e.target.value })
             }
@@ -137,88 +119,56 @@ function App() {
           <input
             style={styles.input}
             type="number"
-            placeholder="Working Hours per Day"
+            placeholder="Working Hours"
             onChange={(e) =>
               setForm({ ...form, hours: e.target.value })
             }
           />
 
-          <button style={styles.primaryBtn} onClick={register}>
-            Get Protected
+          <button style={styles.btn} onClick={register}>
+            Start Coverage
           </button>
         </div>
       ) : (
         <div style={styles.dashboard}>
           <div style={styles.header}>
             <h2>Welcome, {user.name}</h2>
-            <p><MapPin size={16}/> {user.location}</p>
-            <p>Working Hours: {user.hours} hrs/day</p>
+            <p><MapPin size={14}/> {user.location}</p>
           </div>
 
-          <h3>{status}</h3>
+          <div style={styles.status}>{status}</div>
 
           <div style={styles.grid}>
-            <div style={styles.cardBox}>
-              <IndianRupee />
-              <h3>Weekly Premium</h3>
-              <p>₹{premium}</p>
-            </div>
-
-            <div style={styles.cardBox}>
-              <ShieldCheck />
-              <h3>Coverage</h3>
-              <p style={{ color: "#22c55e" }}>Active</p>
-            </div>
-
-            <div style={styles.cardBox}>
-              <CloudRain />
-              <h3>Risk Level</h3>
-              <p>{risk}</p>
-            </div>
-
-            <div style={styles.cardBox}>
-              <IndianRupee />
-              <h3>Earnings Protected</h3>
-              <p>₹{earnings}</p>
-            </div>
+            <Card title="Premium" value={`₹${premium}`} />
+            <Card title="Risk" value={risk} />
+            <Card title="Earnings" value={`₹${earnings}`} />
+            <Card title="Loss Ratio" value={lossRatio} />
           </div>
 
-          <h3>Trigger Disruption</h3>
-          <div style={styles.grid}>
-            <button style={styles.primaryBtn} onClick={() => triggerClaim("rain")}>
-              🌧 Rain
-            </button>
-            <button style={styles.primaryBtn} onClick={() => triggerClaim("heat")}>
-              ☀️ Heatwave
-            </button>
-            <button style={styles.primaryBtn} onClick={() => triggerClaim("pollution")}>
-              🌫 Pollution
-            </button>
+          <div style={styles.section}>
+            <h3>📊 Analytics</h3>
+            <BarChart width={500} height={250} data={claims}>
+              <XAxis dataKey="type" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="amount" />
+            </BarChart>
           </div>
 
-          <div style={styles.claimSection}>
-            <h3>Claims History</h3>
+          <div style={styles.section}>
+            <h3>📜 Claims</h3>
             {claims.map((c, i) => (
-              <div key={i} style={styles.claimItem}>
-                {c.type} → ₹{c.amount} at {c.time}
+              <div key={i} style={styles.claim}>
+                {c.type} → ₹{c.amount} ({c.time})
               </div>
             ))}
           </div>
 
-          <h3>Analytics</h3>
-          <BarChart width={400} height={250} data={claims}>
-            <XAxis dataKey="type" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="amount" />
-          </BarChart>
-
-          <div style={styles.insight}>
-            <h3>AI Insights</h3>
-            <p>
-              AI model calculates risk score using location, weather patterns, and working hours.
-              Premium is dynamically assigned based on risk score.
-            </p>
+          <div style={styles.section}>
+            <h3>⚙️ Engine Logs</h3>
+            {engineLog.map((log, i) => (
+              <div key={i}>{log}</div>
+            ))}
           </div>
         </div>
       )}
@@ -226,18 +176,26 @@ function App() {
   );
 }
 
+const Card = ({ title, value }) => (
+  <div style={styles.box}>
+    <p>{title}</p>
+    <h2>{value}</h2>
+  </div>
+);
+
 const styles = {
   app: {
-    fontFamily: "Inter, sans-serif",
-    background: "linear-gradient(135deg, #0f172a, #1e293b)",
+    fontFamily: "Inter",
+    background: "linear-gradient(135deg,#0f172a,#1e293b)",
     minHeight: "100vh",
     color: "white",
-    textAlign: "center",
     padding: "30px",
+    textAlign: "center",
   },
-  logo: { fontSize: "32px" },
+  logo: { fontSize: "32px", marginBottom: "20px" },
   card: {
-    background: "#1e293b",
+    background: "rgba(255,255,255,0.05)",
+    backdropFilter: "blur(10px)",
     padding: "30px",
     borderRadius: "15px",
     width: "320px",
@@ -250,46 +208,45 @@ const styles = {
     borderRadius: "8px",
     border: "none",
   },
-  primaryBtn: {
-    padding: "10px 20px",
-    margin: "10px",
+  btn: {
     background: "#3b82f6",
-    border: "none",
-    color: "white",
+    padding: "10px 20px",
     borderRadius: "8px",
+    color: "white",
+    border: "none",
     cursor: "pointer",
   },
   dashboard: { maxWidth: "1000px", margin: "auto" },
   header: { marginBottom: "20px" },
+  status: {
+    background: "#22c55e",
+    padding: "10px",
+    borderRadius: "10px",
+    marginBottom: "20px",
+  },
   grid: {
     display: "flex",
-    gap: "15px",
+    gap: "20px",
     justifyContent: "center",
     flexWrap: "wrap",
   },
-  cardBox: {
-    background: "#1e293b",
+  box: {
+    background: "rgba(255,255,255,0.05)",
     padding: "20px",
     borderRadius: "12px",
-    minWidth: "180px",
+    minWidth: "150px",
   },
-  claimSection: {
-    marginTop: "20px",
-    background: "#1e293b",
+  section: {
+    marginTop: "30px",
+    background: "rgba(255,255,255,0.05)",
     padding: "20px",
     borderRadius: "12px",
   },
-  claimItem: {
+  claim: {
     background: "#334155",
-    padding: "10px",
     margin: "5px",
+    padding: "8px",
     borderRadius: "6px",
-  },
-  insight: {
-    marginTop: "20px",
-    background: "#1e293b",
-    padding: "20px",
-    borderRadius: "12px",
   },
 };
 
