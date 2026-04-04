@@ -1,4 +1,4 @@
-# 🚀 GigShield - AI-Powered Parametric Insurance for Grocery Delivery Partners
+# 🚀 EarnShield AI - AI-Powered Parametric Insurance for Grocery Delivery Partners
 
 ## 📌 Problem Statement
 
@@ -11,7 +11,7 @@ Currently, there is **no real-time income protection system** for these gig work
 
 ## 💡 Solution
 
-GigShield is an **AI-powered parametric insurance engine** that provides **instant income protection**.
+EarnShield AI is an **AI-powered parametric insurance engine** that provides **instant income protection**.
 
 Unlike traditional insurance:
 
@@ -60,7 +60,7 @@ We implemented a **rule-based AI model** to dynamically calculate risk and weekl
 
 ## ⚙️ Core System Architecture
 
-GigShield functions as a **real-time parametric insurance engine**:
+EarnShield AI functions as a **real-time parametric insurance engine**:
 
 ---
 
