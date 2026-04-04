@@ -94,7 +94,7 @@ function App() {
 
   return (
     <div style={styles.app}>
-      <h1 style={styles.logo}>🚀 GigShield</h1>
+      <h1 style={styles.logo}>🚀 EarnShield AI</h1>
 
       {!user ? (
         <div style={styles.card}>
